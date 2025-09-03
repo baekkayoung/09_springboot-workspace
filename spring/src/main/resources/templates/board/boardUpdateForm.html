@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}"
+      layout:fragment="content">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #updateForm>table {
+            width: 100%;
+        }
+
+        #updateForm>table * {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="content">
+        <br><br>
+        <div class="innerOuter">
+            <h2>게시글 수정하기</h2>
+            <br>
+
+            <form id="updateForm" method="post" action="update.bo" enctype="multipart/form-data">
+                <input type="hidden" name="boardNo" th:value="${b.boardNo}">
+                <table align="center">
+                    <tr>
+                        <th><label for="title">제목</label></th>
+                        <td><input type="text" id="title" class="form-control" name="boardTitle" value="기존글의 제목" required th:value="${b.boardTitle}"></td>
+                    </tr>
+                    <tr>
+                        <th><label for="writer">작성자</label></th>
+                        <td><input type="text" id="writer" class="form-control" name="boardWriter" value="admin"  readonly th:value="${b.boardWriter}"></td>
+                    </tr>
+                    <tr>
+                        <th><label for="upfile">첨부파일</label></th>
+                        <td>
+                            <input type="file" id="upfile" class="form-control-file border" name="reupfile">
+
+                            <th:block th:if="${b.originName != null}">
+                                <input type="hidden" name="originName" th:value="${b.originName}">
+                                <input type="hidden" name="changeName" th:value="${b.changeName}">
+                                현재 업로드된 파일 :
+                                <a th:text="${b.originName}"
+                                    th:href="@{/uploadFiles/{file}(file=${b.changeName})}"
+                                    th:attr="download=${b.originName}"
+                                ></a>
+                            </th:block>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <th colspan="2"><label for="content">내용</label></th>
+                    </tr>
+                    <tr>
+                        <th colspan="2"><textarea class="form-control" required name="boardContent" id="content" rows="10" style="resize:none;" th:text="${b.boardContent}">기존글의내용</textarea></th>
+                    </tr>
+                </table>
+                <br>
+
+                <div align="center">
+                    <button type="submit" class="btn btn-primary">수정하기</button>
+                    <button type="button" class="btn btn-danger">이전으로</button>
+                </div>
+            </form>
+        </div>
+        <br><br>
+    </div>
+
+
+</body>
+</html>

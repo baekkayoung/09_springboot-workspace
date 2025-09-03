@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{layout/layout}"
+layout:fragment="content">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+        #boardList {
+            text-align: center;
+        }
+
+        #boardList>tbody>tr:hover {
+            cursor: pointer;
+        }
+
+        #pagingArea {
+            width: fit-content;
+            margin: auto;
+        }
+
+        #searchForm {
+            width: 80%;
+            margin: auto;
+        }
+
+        #searchForm>* {
+            float: left;
+            margin: 5px;
+        }
+
+        .select {
+            width: 20%;
+        }
+
+        .text {
+            width: 53%;
+        }
+
+        .searchBtn {
+            Width: 20%;
+        }
+    </style>
+
+</head>
+<body>
+
+    <div class="content">
+        <br><br>
+        <div class="innerOuter" style="padding:5% 10%;">
+            <h2>게시판</h2>
+            <br>
+
+            <th:block th:if="${session.loginUser != null}">
+            <!-- 로그인후 상태일 경우만 보여지는 글쓰기 버튼-->
+            <a class="btn btn-secondary btn-sm" style="float:right" href="enrollForm.bo">글쓰기</a>
+            </th:block>
+
+            <br></br>
+            <table id="boardList" class="table table-hover" align="center">
+                <thead>
+                <tr>
+                    <th>글번호</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>조회수</th>
+                    <th>작성일</th>
+                    <th>첨부파일</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                    <tr th:each="b:${list}">
+                        <td class="bno" th:text="${b.boardNo}"></td>
+                        <td th:text="${b.boardTitle}"></td>
+                        <td th:text="${b.boardWriter}"></td>
+                        <td th:text="${b.count}"></td>
+                        <td th:text="${b.createDate}"></td>
+
+                        <td>
+                            <th:block th:if="${b.originName != null}">★</th:block>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+            <br>
+
+            <script>
+                $(function(){
+                    $("#boardList>tbody>tr").click(function(){
+
+                        let bno = $(this).find(".bno").text().trim();
+
+                        location.href="detail.bo?bno=" + bno;
+                    });
+                })
+
+            </script>
+
+
+
+
+            <div id="pagingArea">
+                <ul class="pagination">
+
+                    <!-- 이전 버튼-->
+                    <li class="page-item" th:classappend="${pi.currentPage == 1} ? 'disabled'">
+                        <a class="page-link" th:href="@{|list.bo?cpage=${pi.currentPage - 1}|}">Previous</a>
+                    </li>
+
+                    <!--
+                    타임리프에서의 반복문은 th:each
+                    반복횟수를 정해서 반복하려면? 타임리프의 내장객체인 #numbers를 사용! => 숫자의 범위를 만들어줌
+                    그 중 sequence(start, end)는 start부터 end까지의 정수 리스트를 생성하여 변수에 저장
+
+                    -->
+
+                    <li class="page-item"
+                        th:each=" pageNum : ${#numbers.sequence(pi.startPage, pi.endPage)}"
+                        th:classappend="${pageNum == pi.currentPage} ? 'active' ">
+                        <a class="page-link" th:href="@{|list.bo?cpage=${pageNum}|}" th:text="${pageNum}"></a>
+                    </li>
+
+
+                    <li class="page-item" th:classappend="${pi.currentPage == pi.maxPage} ? 'disabled'">
+                        <a class="page-link" th:href="@{|list.bo?cpage=${pi.currentPage + 1 }|}">Next</a>
+                    </li>
+
+                </ul>
+            </div>
+
+            <br clear="both"><br>
+
+
+            <form id="searchForm" action="" method="get" align="center">
+                <div class="select">
+                    <select class="custom-select" name="condition">
+                        <option value="writer">작성자</option>
+                        <option value="title">제목</option>
+                        <option value="content">내용</option>
+                    </select>
+                </div>
+                <div class="text">
+                    <input type="text" class="form-control" name="keyword">
+                </div>
+                <button type="submit" class="searchBtn btn btn-secondary">검색</button>
+            </form>
+            <br><br>
+        </div>
+        <br><br>
+    </div>
+
+</body>
+</html>

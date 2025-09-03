@@ -37,7 +37,7 @@ dependencies {
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3") // 순수 mybatis
     implementation("org.springframework.boot:spring-boot-starter-jdbc:3.5.5") // JDBC를 위한 라이브러리 설정 마지막 코끼리 꼭
     implementation("org.springframework.boot:spring-boot-starter-security:3.5.5") // spring security
-
+    implementation("com.google.code.gson:gson:2.10.1") // gson 라이브러리
 }
 
 tasks.named('test') {
