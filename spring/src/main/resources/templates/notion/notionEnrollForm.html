@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{layout/layout}"
+layout:fragment="content">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+        #notionAddForm>table {
+            width: 100%;
+        }
+
+        #notionAddForm>table * {
+            margin: 5px;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="content">
+    <br><br>
+    <div class="innerOuter">
+        <h2>경조사 게시글 추가하기</h2>
+        <br>
+
+        <form id="notionAddForm" method="post" action="" enctype="">
+            <table align="center">
+                <tr>
+                    <th><label>구분</label></th>
+                    <td>
+                        <select class="form-control-file border" name="category">
+                            <option value="결혼">결혼</option>
+                            <option value="출산">출산</option>
+                            <option value="부고">부고</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="title">제목</label></th>
+                    <td><input type="text" id="title" name="title" class="form-control" required></td>
+                </tr>
+                <tr>
+                    <th><label for="writer">작성자</label></th>
+                    <td><input type="text" id="writer" name="writer" class="form-control" th:value="${session.loginUser.userName}" readonly></td>
+                </tr>
+
+            </table>
+            <br>
+
+            <div align="center">
+                <button type="submit" class="btn btn-primary">등록하기</button>
+                <button type="reset" class="btn btn-danger">취소하기</button>
+            </div>
+        </form>
+    </div>
+    <br><br>
+</div>
+
+<script>
+    $(function(){
+        $("#notionAddForm").on("submit", function(e){
+            e.preventDefault(); // 기존에 있떤 이벤트 막음 action으로 넘어가는걸 막음 (비동기로하려고하는 걸 막음)
+
+            let formData ={
+                    title : $(this).find("input[name='title']").val(), // this=notionAddform id로 줘도 됨 굳이 this로 해봄
+                    category : $(this).find("select[name='category']").val(),
+                    writer : $(this).find("input[name='writer']").val()
+
+
+            };
+
+            $.ajax({
+                url:"add.notion",
+                method:"POST",
+                contentType:"application/json",
+                data:JSON.stringify(formData),
+                success:function(res){
+
+                    if(res == "success"){
+                        alert("경조사 게시글 등록 완료!")
+                        location.href="list.notion";
+
+                    }else{
+                        alert("경조사 게시글 등록 실패!")
+                    }
+                }, error:function(){
+                    alert("등록 실패")
+                }
+            })
+
+        })
+    })
+
+</script>
+
+</body>
+</html>

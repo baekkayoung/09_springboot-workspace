@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}"
+      layout:fragment="content">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+        #notionList {
+            text-align: center;
+        }
+
+        #notionList>tbody>tr:hover {
+            cursor: pointer;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="content">
+    <br><br>
+    <div class="innerOuter" style="padding:5% 10%;">
+        <h2>경조사 게시판</h2>
+        <br>
+
+        <th:block th:if="${session.loginUser != null}">
+            <!-- 로그인후 상태일 경우만 보여지는 글쓰기 버튼
+            a 태그 안에 th:if="${session.loginUser != null}" 를 넣어서 해도 됨-->
+            <a class="btn btn-secondary btn-sm" style="float:right" href="enrollForm.notion">경조사 추가</a>
+        </th:block>
+
+
+        <br></br>
+        <table id="notionList" class="table table-hover" align="center">
+            <thead>
+            <tr>
+                <th>구분</th>
+                <th width="400">제목</th>
+                <th>작성일</th>
+                <th>작성자</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+
+
+        <!-- 이건 일반 String이 아니라 json 데이터라는 의미 -->
+        <script id="notionData" type="application/json" th:utext="${dbData}">
+        </script>
+
+        <!--
+            -th:utext는 "un-escaped text"의 약자로 변환없이 원본 텍스트를 출력하는 타임리프의 기능!
+            서버에서 json과 같은 데이터를 보냈을 때 HTML이 데이터를 손상시키지 않게 하기 위함!
+            ex) "제목" : 1 => html에서는 이런 Data를 String(문자열)로 바꾸는 경향이 있음 ... 제목 : 1
+            이거를 자동으로 " 따옴표를 &quot;로 변환해줌!
+            &quot;제목&quot; : 1  / json으로 바로 바라볼 수 있도록!
+
+        -->
+
+
+        <script>
+
+            $(function(){
+                let dbData = JSON.parse($("#notionData").text());
+                console.log(dbData);
+
+
+                let results = dbData.results;
+                // console.log(results);
+
+                let $tbody = $("#notionList tbody");
+                   $tbody.empty();
+
+                   // (요소, 함수)  , index,item
+                   $.each(results, function(index, item){
+
+                       let page = item.properties;
+
+                       let title = page.제목 && page.제목.title.length > 0 ? page.제목.title[0].text.content : "";
+
+                       let category = page.구분 && page.구분.select.name ? page.구분.select.name : "";
+
+                       let writer = page.작성자 && page.작성자.rich_text.length > 0 ? page.작성자.rich_text[0].text.content : "";
+
+                       let date = page.작성일 && page.작성일.date.start ? page.작성일.date.start : "";
+
+                       console.log(title, category, writer, date);
+
+                       let $tr =$("<tr></tr>")
+                       $tr.append("<td>" + category + "</td>");
+                       $tr.append("<td>" + title + "</td>");
+                       $tr.append("<td>" + date + "</td>");
+                       $tr.append("<td>" + writer + "</td>");
+                       $tbody.append($tr);
+
+                   });
+
+            });
+
+        </script>
+
+        <br>
+
+
+        <br clear="both"><br>
+
+
+    </div>
+    <br><br>
+</div>
+
+</body>
+</html>

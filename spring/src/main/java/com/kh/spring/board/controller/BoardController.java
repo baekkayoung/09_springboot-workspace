@@ -204,25 +204,9 @@ public class BoardController {
 		}
 		
 	}	
+
 	
-	@ResponseBody
-	@RequestMapping(value="rlist.bo",produces="application/json; charset=utf-8")
-	public String ajaxSelectReplyList(int bno) {
-		ArrayList<Reply> list = bService.selectReplyList(bno);
-		
-		return new Gson().toJson(list);
-	}
-	
-	@ResponseBody
-	@RequestMapping(value="rinsert.bo")
-	public String ajaxInsertReply(Reply r) {
-		
-		int result = bService.insertReply(r);
-		
-		return result > 0 ? "success" : "fail";
-		// 응답뷰 리턴인지 데이터인지? 데이터면 바디추가
-		
-	}
+
 	
 	@ResponseBody
 	@RequestMapping(value="topList.bo", produces="application/json; charset=utf-8")	
