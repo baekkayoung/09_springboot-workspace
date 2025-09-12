@@ -28,7 +28,6 @@ public class BoardServiceImpl implements BoardService {
 	public ArrayList<Board> selectList(PageInfo pi) {
 		return bDao.selectList(sqlSession, pi);
 	}
-
 	@Override
 	public int insertBoard(Board b) {
 		return bDao.insertBoard(sqlSession, b);
